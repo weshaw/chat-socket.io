@@ -1,9 +1,12 @@
 {
-    "name": "socket-chat-example",
+    "name": "wotofos Chat",
     "version": "0.0.1",
-    "description": "my first socket.io app",
+    "description": "socket.io chat interface",
     "dependencies": {
+        "bson": "^1.0.4",
+        "bson-ext": "^1.0.5",
         "express": "^4.16.2",
+        "mongodb": "^3.0.2",
         "shortid": "^2.2.8",
         "socket.io": "^2.0.4"
     }
