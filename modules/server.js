@@ -4,6 +4,7 @@ module.exports = function(m)
 {    
     this.app    = app;
     this.http   = http;
+    this.port   = 3000;
 
     this.app.get('/', (req, res) => {
         res.sendFile(__basedir  + '/pages/index.html');
@@ -16,9 +17,14 @@ module.exports = function(m)
             }
         });
     });
-    this.http.listen(3000, () => {
-        console.log('listening on *:3000');
-    });
+    this.start = function(){
+        return new Promise((resolve, reject) => {
+            this.http.listen(this.port, () => {
+                console.log('listening on *:'+this.port);
+                resolve(this.http);
+            });
+        });
+    }
 
     return this;
 };

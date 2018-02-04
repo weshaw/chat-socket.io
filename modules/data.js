@@ -3,18 +3,81 @@ const assert        = require('assert');
 
 module.exports = function(m)
 {
-    this.dbname = "chat";
-    this.dbhost = "mongodb://localhost:27017";
+    this.dbname         = "chat";
+    this.dbhost         = "mongodb://localhost:27017";
+    this.dboptions      = {
+        reconnectTries : Number.MAX_VALUE,
+        autoReconnect : true
+    };  
+    this.db             = false;
+    this.client         = MongoClient;
+    this.collections    = [];
+    this.connection     = false;
 
-    this.client = MongoClient;
-    this.db     = false;
+    this.connect = function()
+    {
+        return new Promise((resolve,reject) => {
+            this.collections = [];
+            this.client.connect(this.dbhost, this.dboptions, (err, client) => {
+                if(err)
+                {
+                    reject(err);
+                    return false;
+                }
+                this.connection = client;
 
-    this.client.connect(this.dbhost, (err, client) => {
-        assert.equal(null, err);
-        console.log("Connected successfully to server");
-      
-        this.db = client.db(this.dbname);
-      
-        client.close();
-    });
+                this.db = this.connection.db(this.dbname);
+                this.db.listCollections().toArray((err, collections) => {
+                    if (err) 
+                        {  console.log(err); return false; }
+                    this.collections = [];
+                    for(let i=0,l=collections.length;i<l;i++)
+                    {
+                        this.collections.push(collections[i].name);
+                    }
+                });
+                resolve(this.db);
+            });
+        });
+    };
+    this.disconnect = function()
+    {
+        if(this.connection)
+        {
+            this.connection.close();
+        }
+    };
+    this.has_collection = function(name){
+        return this.collections.indexOf(name) >= 0;
+    };
+    this.new_collection = function(name,options)
+    {
+        return new Promise((resolve,reject) => {
+            if(this.has_collection(name))
+            {
+                resolve(false);
+            }
+            else
+            {
+                this.db.createCollection(name,options,(err, results) => {
+                    if (err) 
+                    {
+                        reject(err);
+                        return false;
+                    }
+                    this.collections.push(name);
+                    resolve(results);
+                });
+
+            }
+        });
+    };
+    this.set = function(collection,data)
+    {
+        return new Promise((resolve,reject) => {
+            
+        });
+    };
+
+    return this;
 };
