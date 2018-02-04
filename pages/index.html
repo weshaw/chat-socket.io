@@ -1,0 +1,73 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Socket.IO chat</title>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { font: 13px Helvetica, Arial; }
+      form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
+      form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
+      form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
+      #messages { list-style-type: none; margin: 0; padding: 0; }
+      #messages li { padding: 5px 10px; }
+      #messages li:nth-child(odd) { background: #eee; }
+    </style>
+  </head>
+  <body>
+    <ul id="messages"></ul>
+    <form action="">
+        <input id="n" autocomplete="off" value="user" />
+        <input id="m" autocomplete="off" /><button>Send</button>
+    </form>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+    <script>
+    $(function(){
+        var o = {
+            id: localStorage.getItem("id")||false
+        };
+    var socket = io();
+    $('form').submit(function(e){
+        e.preventDefault();
+        var obj = {};
+        obj.id = o.id;
+        obj.name = $('#n').val();
+        obj.message = $('#m').val();
+        console.log(obj);
+        socket.emit('chat message', obj);
+        $('#m').val('');
+        return false;
+    });
+   var addmsg =  function(msg){
+      $('<li>')
+        .append($('<span>').text(msg.name))
+            .append($('<span>').text(": "))
+            .append($('<span>').text(msg.message))
+            .appendTo($("#messages"));
+    };
+    socket.on('setup',function(opts){
+        o = $.extend(o,opts);
+        localStorage.setItem('id', o.id);
+
+        if(o.name)
+        {
+            $('#n').val(o.name);
+        }
+    });
+    socket.on('chat message',addmsg);
+    socket.on('messages',function(m){
+        for (var i = 0; i < m.length; i++) {
+            addmsg(m[i]);
+        }
+    });
+    socket.emit('setup',o.id);
+
+});
+
+
+    
+    </script> 
+    
+</body>
+</html>
