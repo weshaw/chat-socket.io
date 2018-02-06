@@ -50,8 +50,20 @@ module.exports = function(m)
     this.has_collection = function(name){
         return this.collections.indexOf(name) >= 0;
     };
+
     this.new_collection = function(name,options)
     {
+        // create many:
+        if(typeof name == "object")
+        {
+            let p = [];
+            for (const n in name) {
+                let o = name[n];
+                p.push(this.new_collection(n,o));
+            }
+            return Promise.all(p);
+        }
+        // create one:
         return new Promise((resolve,reject) => {
             if(this.has_collection(name))
             {
