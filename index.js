@@ -11,7 +11,7 @@ core.data.connect().then((db) => {
 })
 .then((r) => {
     if(r)
-        { console.log("messages collection created"); }
+        { console.log("collections created"); }
     
     console.log("collections available:",core.data.collections);
 
