@@ -15,6 +15,11 @@ core.data.connect().then((db) => {
     
     console.log("collections available:",core.data.collections);
 
+    return core.messages.load_existing();
+})
+.then(() => {
+
+    console.log("Load DB Data");
     return core.server.start();
 })
 .then(() => {

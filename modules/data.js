@@ -84,11 +84,60 @@ module.exports = function(m)
             }
         });
     };
-    this.set = function(collection,data)
+
+    this.collection = function(collection)
     {
+        console.log(collection);
         return new Promise((resolve,reject) => {
-            
+            this.db.collection(collection,(err, col)=>{
+                if(err)
+                    { reject(err); return; }
+                resolve(col);
+            });
         });
+    };
+
+    this.insert = function(collection,data={})
+    {
+        return this.collection(collection)
+            .then((col) => { return new Promise((resolve,reject) => {
+                col.insert(data,(err,res) => {
+                    if(err)  { reject(err); return; }
+                    resolve(res);
+                });
+            }) },(err) => console.error(err));
+    };
+    
+    this.find = function(collection,data = {},sort = false)
+    {
+        return this.collection(collection)
+            .then((col) => { return new Promise((resolve,reject) => {
+                let cursor = col.find(data);
+                if(sort)
+                {
+                    cursor.sort(sort);
+                }
+                cursor.toArray((err,res) => {
+                    if(err) { reject(err); return; }
+                    resolve(res);
+                });
+            }) },(err) => console.error(err));
+    };
+
+    this.update = function(
+        collection,
+        likethis = {},
+        tothis = {},
+        options = { multi:true }
+    ){
+        return this.collection(collection)
+            .then((col) => { return new Promise((resolve,reject) => {
+                if(err) { reject(err); return; }
+                col.update(likethis,tothis,{multi:true},(err) => {
+                    if(err) { reject(err); return; }
+                    resolve();
+                });
+            }) },(err) => console.error(err));
     };
 
     return this;
