@@ -12,15 +12,11 @@ core.data.connect().then((db) => {
 .then((r) => {
     if(r)
         { console.log("collections created"); }
-    
-    console.log("collections available:",core.data.collections);
 
-    return core.messages.load_existing();
-})
-.then(() => {
-
-    console.log("Load DB Data");
-    return core.server.start();
+    return Promise.all([
+        core.messages.init(),
+        core.server.start()
+    ]);
 })
 .then(() => {
 

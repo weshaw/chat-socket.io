@@ -84,10 +84,9 @@ module.exports = function(m)
             }
         });
     };
-
+    // select a collection to work with.
     this.collection = function(collection)
     {
-        console.log(collection);
         return new Promise((resolve,reject) => {
             this.db.collection(collection,(err, col)=>{
                 if(err)
@@ -96,7 +95,7 @@ module.exports = function(m)
             });
         });
     };
-
+    // add data to a collection
     this.insert = function(collection,data={})
     {
         return this.collection(collection)
@@ -107,7 +106,7 @@ module.exports = function(m)
                 });
             }) },(err) => console.error(err));
     };
-    
+    // select data from a collection
     this.find = function(collection,data = {},sort = false)
     {
         return this.collection(collection)
@@ -123,11 +122,11 @@ module.exports = function(m)
                 });
             }) },(err) => console.error(err));
     };
-
+    // update data in a collection
     this.update = function(
-        collection,
-        likethis = {},
-        tothis = {},
+        collection,     // name
+        likethis = {},  // find this
+        tothis = {},    // change it to this
         options = { multi:true }
     ){
         return this.collection(collection)

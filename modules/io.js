@@ -2,13 +2,15 @@ var socket      = require('socket.io');
 module.exports = function(m)
 {    
     this.io     = socket(m.server.http);
-
     this.io.on('connection', (socket) => {
         console.log('a user connected',socket.id);
         this.new_connection(socket);
         this.io.to(socket.id).emit('messages',m.messages.get());
     });
-
+    
+    // this.init = function()
+    // {
+    // };
 
     this.new_connection = function(socket)
     {

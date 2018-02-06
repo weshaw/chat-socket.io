@@ -6,6 +6,16 @@ module.exports = function(m)
     this.http   = http;
     this.port   = 3000;
 
+    this.start = function(){
+        console.log("WS RUNNING");
+        return new Promise((resolve, reject) => {
+            this.http.listen(this.port, () => {
+                console.log('listening on *:'+this.port);
+                resolve(this.http);
+            });
+        });
+    };
+
     this.app.get('/', (req, res) => {
         res.sendFile(__basedir  + '/pages/index.html');
     });
@@ -17,14 +27,7 @@ module.exports = function(m)
             }
         });
     });
-    this.start = function(){
-        return new Promise((resolve, reject) => {
-            this.http.listen(this.port, () => {
-                console.log('listening on *:'+this.port);
-                resolve(this.http);
-            });
-        });
-    }
+
 
     return this;
 };

@@ -2,7 +2,7 @@
 module.exports = function(m)
 {
     this.history = [];
-    this.load_existing = function()
+    this.init = function()
     {
         return new Promise((resolve,reject) => {
             m.data.find("messages").then((messages) => {
